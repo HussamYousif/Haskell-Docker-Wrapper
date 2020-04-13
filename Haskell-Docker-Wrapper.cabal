@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 554e91b76f02beda943e77843b423228cd963f1b459afef7d3edc4a295978947
+-- hash: 95ce21e818675d5330e6af5db6715fb1d425f73dd50606e6c256e5d6d812f4d8
 
 name:           Haskell-Docker-Wrapper
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , containers
     , directory
     , process
   default-language: Haskell2010
@@ -48,6 +49,7 @@ executable Haskell-Docker-Wrapper-exe
   build-depends:
       Haskell-Docker-Wrapper
     , base >=4.7 && <5
+    , containers
     , directory
     , process
   default-language: Haskell2010
@@ -63,6 +65,7 @@ test-suite Haskell-Docker-Wrapper-test
   build-depends:
       Haskell-Docker-Wrapper
     , base >=4.7 && <5
+    , containers
     , directory
     , process
   default-language: Haskell2010
