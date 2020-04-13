@@ -8,7 +8,6 @@ import Control.Monad
 import Data.Char
 import qualified Data.Foldable as Foldable
 import qualified Data.List as List
-import Data.List.Split
 import System.Console.GetOpt
 import System.Directory
 import System.Environment
