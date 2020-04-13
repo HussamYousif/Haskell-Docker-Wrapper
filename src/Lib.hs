@@ -18,6 +18,8 @@ import Text.Printf
 
 repos = "./repos"
 
+services = "./services"
+
 data Flag
   = Run
   | Log
@@ -31,7 +33,6 @@ data DockerService =
     , name :: String
     }
 
--- TODO Make it run one service if specified.
 flags =
   [ Option ['r'] ["run"] (NoArg Run) "Runs all the docker services"
   , Option
@@ -46,6 +47,44 @@ flags =
       "Enter the shell within the container specified by an argument. Argument service"
   , Option [] ["help"] (NoArg Help) "Print this help message"
   ]
+
+-- Docker has to be running to reach this stage
+dockerPS :: IO [String]
+dockerPS = do
+  (_, stdin, stderr) <- runDockerCommand ["ps"]
+  let services = (tail . lines) stdin
+  return services
+
+-- Reads a file and returns a tuple of the service and the alias given to the service
+-- by the user.
+-- reads the "./services" file
+readServices :: IO [(String, String)]
+readServices = do
+  servicesContent <- readFile services
+  let servicesContent' = (lines) servicesContent -- Remove the first line which contains CONTAINERID etc.
+  let servicesContent'' = map words servicesContent'
+  let results = map (\line -> (line !! 0, line !! 1)) servicesContent''
+  return results
+
+-- slices the string
+getContainerId :: String -> String
+getContainerId psLine = take 12 psLine
+
+getServiceData = do
+  runningServices <- dockerPS
+  userServices <- readServices
+  putStrLn "Hei"
+
+-- Error here.
+getDockerService :: [String] -> ([String], [String]) -> [DockerService]
+getDockerService _ [] = []
+getDockerService runningServices ((a, b):ys) =
+  if service /= []
+    then (Service a (getContainerId service)) :
+         getServiceData runningServices (ys)
+    else getServiceData runningServices (ys)
+  where
+    service = filter (\s -> elem b s)
 
 parseArgs :: [String] -> IO (Flag, Maybe String)
 parseArgs argv =
